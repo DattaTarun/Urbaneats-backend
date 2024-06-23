@@ -6,10 +6,14 @@ import myUserRoute from "./routes/MyUserRoute"
 import {v2 as cloudinary} from "cloudinary"
 import myRestaurantRoute from "./routes/MyRestaurantRoute";
 import restaurantRoute from "./routes/RestaurantRoute"
+import orderRoute from "./routes/OrderRoute"
 
 const app= express();
-app.use(express.json())
+
 app.use(cors())
+
+app.use("/api/order/checkout/webhook",express.raw({type:"*/*"}))
+app.use(express.json())
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string).then(()=>console.log("connected to database"));
 
@@ -26,6 +30,7 @@ app.get("/health",async(req:Request,res:Response)=>{
 app.use("/api/my/user",myUserRoute);
 app.use("/api/my/restaurant",myRestaurantRoute);
 app.use("/api/restaurant",restaurantRoute);
+app.use("/api/order", orderRoute);
 
 app.listen(2000,()=>{
     console.log("server started on port 2000")
